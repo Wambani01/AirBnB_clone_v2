@@ -118,7 +118,6 @@ class HBNBCommand(cmd.Cmd):
         new_instance.__dict__.update(kv_dict)
         storage.save()
         print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
