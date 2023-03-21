@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/iusr/bin/python3
 """ database storage management """
 from sqlalchemy import create_engine
 import os
@@ -19,51 +19,60 @@ class DBStorage():
 
     def __init__(self):
         """ initiliazes the class """
-        self.__engine = create_engine(
+        DBStorage.__engine = create_engine(
              f'mysql+mysqldb://{user}:{password}@{host}/{database}',
              pool_pre_ping=True
         )
         hbnd_env = os.environ.get('HBNB_ENV')
         if (hbnd_env == "test"):
-            Base.metadata.drop_all(engine)
+            Base.metadata.drop_all(DBStorage.__engine)
 
     def all(self, cls=None):
         """ retrives all objects """
-        Session = sessionmaker(bind=engine)
-        self.__session = Session()
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
+        Session = sessionmaker(bind=DBStorage.__engine)
+        DBStorage.__session = Session()
         objects = {}
         if cls is not None:
             # Query for objects of a specific class
-            results = self.__session.query(cls).all()
+            results = DBStorage.__session.query(cls).all()
         else:
             # Query for all types of objects
             results = []
-            for cls in [User, State, City, Amenity, Place, Review]:
-                results.extend(self.__session.query(cls).all())
+            for cls in [State, City]:
+                results.extend(DBStorage.__session.query(cls).all())
         # Add objects to dictionary
         for obj in results:
             key = "{}.{}".format(obj.__class__.__name__, obj.id)
             objects[key] = obj
-        self.__session.close()
+        DBStorage.__session.close()
         return objects
 
     def new(self, obj):
         """ add a new object to the session """
 
-        Session = sessionmaker(bind=engine)
-        self.__session = Session()
-        self.__session.add(obj)
+        Session = sessionmaker(bind=DBStorage.__engine)
+        DBStorage.__session = Session()
+        DBStorage.__session.add(obj)
 
     def save(self):
         """ saves an object to the database """
 
-        self.__session.commit()
-        self.__session.close()
+        Session = sessionmaker(bind=DBStorage.__engine)
+        DBStorage.__session = Session()
+        DBStorage.__session.commit()
+        DBStorage.__session.close()
 
     def delete(self, obj=None):
         """ deletes an object from current session """
         if (obj):
-            self.__session.delete(obj)
+            DBStorage.__session.delete(obj)
 
     def reload(self):
         from models.base_model import BaseModel
@@ -75,11 +84,11 @@ class DBStorage():
         from models.review import Review
 
         # create all tables in the database
-        Base.metadata.create_all(self.__engine)
+        Base.metadata.create_all(DBStorage.__engine)
 
         # create the current database session
         session_factory = sessionmaker(
-            bind=self.__engine,
+            bind=DBStorage.__engine,
             expire_on_commit=False
         )
-        self.__session = scoped_session(session_factory)
+        DBStorage.__session = scoped_session(session_factory)
