@@ -36,32 +36,32 @@ class HBNBCommand(cmd.Cmd):
             print('(hbnb)')
 
     def precmd(self, line):
-        """ processes user entry fo usage by other commands 
+        """ processes user entry fo usage by other commands
 
         Usage: create <Class name> <param 1> <param 2> <param 3>...
         """
-        args_dict = {}
-        if not ("=" in line):
-            args_dict["class"] = line
-            return args_dict
-        args_list = line.split(" ")
-        args_dict["class"] = args_list[0]
-        for i in args_list[1:-1]:
-            param = i.split('=')
-            if (param[1][0] == '"' and param[1][-1] == '"'):
-                value = param[1][1:-1].replace('_', ' ')
-                args_dict[param[0]] = value
-            else:
-                try:
-                    if("." in param[1]):
-                        value = float(param[1])
-                        args_dict[param[0]] = value
-                    else:       
-                        value = int(param[1])
-                        args_dict[param[0]] = value
-                except ValueError:
-                    pass
-        return args_dict
+        _cmd = _cls = _id = _params = ''  # initialize line elements
+
+        # scan for general formating - i.e '.', '(', ')'
+        if not ('=' in line in line):
+            return line
+
+        try:  # parse line left to right
+            pline = line[:]  # parsed line
+            lst = pline.split()
+            # isolate <command>
+            _cmd = lst[0]
+
+            # isolate <Class name>
+            _cls = lst[1]
+
+            lst = lst[2:]
+            line = ' '.join([_cmd, _cls, lst])
+
+        except Exception as mess:
+            pass
+        finally:
+            return line
 
     def postcmd(self, stop, line):
         """Prints if isatty is false"""
@@ -92,15 +92,30 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if not args["class"]:
+        params = args.split()
+
+        if not args:
             print("** class name missing **")
             return
-        elif args["class"] not in HBNBCommand.classes:
+        elif params[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args["class"]]()
-        del args["class"]
-        new_instance.__dict__.update(args)
+        new_instance = HBNBCommand.classes[params[0]]()
+        kv_dict = {}
+        for i in params[1:]:
+            kv = i.split('=')
+            if '"' in kv[1]:
+                value = kv[1].replace('"', '').replace('_', ' ')
+                kv_dict[kv[0]] = value
+            else:
+                try:
+                    if '.' in kv[1]:
+                        kv_dict[kv[0]] = float(kv[1])
+                    else:
+                        kv_dict[kv[0]] = int(kv[1])
+                except ValueError:
+                    pass
+        new_instance.__dict__.update(kv_dict)
         storage.save()
         print(new_instance.id)
         storage.save()
@@ -298,6 +313,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
