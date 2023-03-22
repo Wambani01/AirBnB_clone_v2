@@ -45,7 +45,7 @@ class DBStorage():
         else:
             # Query for all types of objects
             results = []
-            for cls in [State, City]:
+            for cls in [State, City, User]:
                 results.extend(DBStorage.__session.query(cls).all())
         # Add objects to dictionary
         for obj in results:
