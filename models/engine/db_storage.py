@@ -57,17 +57,12 @@ class DBStorage():
     def new(self, obj):
         """ add a new object to the session """
 
-        Session = sessionmaker(bind=DBStorage.__engine)
-        DBStorage.__session = Session()
         DBStorage.__session.add(obj)
 
     def save(self):
         """ saves an object to the database """
 
-        Session = sessionmaker(bind=DBStorage.__engine)
-        DBStorage.__session = Session()
         DBStorage.__session.commit()
-        DBStorage.__session.close()
 
     def delete(self, obj=None):
         """ deletes an object from current session """
