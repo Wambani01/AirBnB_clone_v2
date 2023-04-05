@@ -30,4 +30,3 @@ sudo sed -i '/server_name _;/a \ \tlocation /hbnb_static {\n\t\talias /data/web_
 
 #restart the server
 sudo service nginx restart
-
