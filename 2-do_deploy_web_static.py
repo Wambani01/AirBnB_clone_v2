@@ -4,7 +4,6 @@ and decompress it"""
 
 from fabric.api import run, env, put
 import os.path
-from fabric import Connection
 
 env.hosts = ['54.162.93.251', '100.25.3.37']
 env.key_filename = '~/.ssh/school'
@@ -18,16 +17,14 @@ def do_deploy(archive_path):
     compressed_file = archive_path.split("/")[-1]
     no_extension = compressed_file.split(".")[0]
     
-    for host in env.hosts:
-        with Connection(host) as c:
-            try:
-                remote_path = "/data/web_static/releases/{}".format(no_extension)
-                sym_link = "/data/web_static/current"
-                c.put(archive_path, "/tmp/")
-                c.run("sudo mkdir - p {}".format(remote_path))
-                c.run("sudo tar -xvzf /tmp/{} -C {}".format(compressed_file, remote_path))
-                c.run("sudo rm /tmp/{}".format(compressed_file))
-                c.run("sudo ln -sf {} {}".format(remote_path, sym_link))
-                return True
-            except Exception as e:
-                return False
+    try:
+       remote_path = "/data/web_static/releases/{}/".format(no_extension)
+       sym_link = "/data/web_static/current"
+       put(archive_path, "/tmp/")
+       run("sudo mkdir - p {}".format(remote_path))
+       run("sudo tar -xvzf /tmp/{} -C {}".format(compressed_file, remote_path))
+       run("sudo rm /tmp/{}".format(compressed_file))
+       run("sudo ln -sf {} {}".format(remote_path, sym_link))
+       return True
+    except Exception as e:
+       return False
