@@ -7,11 +7,13 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
+
 @app.teardown_appcontext
 def clean_up(exception=None):
     """a function to release db resources"""
-    
+
     storage.close()
+
 
 @app.route("/states_list", strict_slashes=False)
 def states_list():
