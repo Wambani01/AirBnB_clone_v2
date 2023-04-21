@@ -90,4 +90,3 @@ class DBStorage():
     def close(self):
         """closes the current db session"""
         DBStorage.__session.close()
-
