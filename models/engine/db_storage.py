@@ -1,4 +1,4 @@
-#!/iusr/bin/python3
+#!/usr/bin/python3
 """ database storage management """
 from sqlalchemy import create_engine
 import os
