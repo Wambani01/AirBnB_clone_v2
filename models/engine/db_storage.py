@@ -72,6 +72,7 @@ class DBStorage():
             self.__session.delete(obj)
 
     def reload(self):
+        """reloads objects from the db"""
         from models.base_model import BaseModel
         from models.user import User
         from models.place import Place
