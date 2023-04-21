@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-"""a script to return all states from db"""
+"""This module contains the app instance for the AirBnB Web"""
 
 from models import storage
 from models.state import State
@@ -11,13 +11,13 @@ app = Flask(__name__)
 
 @app.teardown_appcontext
 def clean_up(exception=None):
-    """a function to release db resources"""
+    """eliminates current Session"""
     storage.close()
 
 
 @app.route('/states_list', strict_slashes=False)
 def states_list():
-    """a function to return all states from db"""
+    """enumerate all states"""
     states = storage.all(State)
     return render_template('7-states_list.html', states=states)
 
