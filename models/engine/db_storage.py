@@ -23,7 +23,7 @@ class DBStorage():
             "mysql+mysqldb://{}:{}@{}/{}".format(user,
                                                  password,
                                                  host,
-                                                 database)
+                                                 database),
             pool_pre_ping=True
         )
         hbnd_env = os.environ.get('HBNB_ENV')
