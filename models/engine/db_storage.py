@@ -51,7 +51,6 @@ class DBStorage():
         for obj in results:
             key = "{}.{}".format(obj.__class__.__name__, obj.id)
             objects[key] = obj
-        DBStorage.__session.close()
         return objects
 
     def new(self, obj):
@@ -87,3 +86,8 @@ class DBStorage():
             expire_on_commit=False
         )
         DBStorage.__session = scoped_session(session_factory)
+
+    def close(self):
+        """closes the current db session"""
+        DBStorage.__session.close()
+
