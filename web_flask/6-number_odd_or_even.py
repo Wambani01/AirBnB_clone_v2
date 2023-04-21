@@ -20,7 +20,7 @@ def index_hbnb():
 @app.route("/c/<text>", strict_slashes=False)
 def index_c(text):
     """a function to return C is fun"""
-    return f'C {text.replace("_", " ")}'
+    return 'C ' + text.replace('_', ' ')
 
 
 @app.route('/python', strict_slashes=False)
@@ -33,7 +33,7 @@ def python_is_cool(text='is cool'):
 @app.route('/number/<int:n>', strict_slashes=False)
 def a_number(n):
     """displays only when a number is passed on the url"""
-    return f'{n} is a number'
+    return "{} is a number".format(n)
 
 
 @app.route('/number_template/<int:n>', strict_slashes=False)
