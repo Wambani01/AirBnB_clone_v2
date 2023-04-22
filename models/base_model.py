@@ -26,7 +26,8 @@ class BaseModel:
         if kwargs:
             for k in kwargs:
                 if k in ['created_at', 'updated_at']:
-                    setattr(self, k, datetime.fromisoformat(kwargs[k]))
+                    my_str = "%Y-%m-%dT%H:%M:%S.%f"
+                    setattr(self, k, datetime.strptime(kwargs[k], my_str))
                 elif k != '__class__':
                     setattr(self, k, kwargs[k])
                 if not hasattr(kwargs, 'id'):
