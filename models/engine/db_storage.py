@@ -1,4 +1,4 @@
-#!/iusr/bin/python3
+#!/usr/bin/python3
 """ database storage management """
 from sqlalchemy import create_engine
 import os
@@ -85,11 +85,9 @@ class DBStorage():
         Base.metadata.create_all(self.__engine)
 
         # create the current database session
-        session_factory = sessionmaker(
-            bind=self.__engine,
-            expire_on_commit=False
-        )
-        self.__session = scoped_session(session_factory)
+        Session = scoped_session(sessionmaker(bind=self.__engine,
+                                              expire_on_commit=True))
+        self.__session = Session()
 
     def close(self):
         """closes the current db session"""
